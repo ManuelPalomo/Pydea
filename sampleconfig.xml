@@ -1,0 +1,8 @@
+<Configuration>
+  <Keys>
+    <Key ConsumerKey=""/>
+    <Key ConsumerSecret=""/>
+    <Key AccessToken=""/>
+    <Key AccessTokenSecret=""/>
+  </Keys>
+</Configuration>
