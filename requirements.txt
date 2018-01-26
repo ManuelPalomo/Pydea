@@ -1,0 +1,2 @@
+### Pydea Requirements.txt
+twitter-python # https://github.com/bear/python-twitter
