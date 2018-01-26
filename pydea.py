@@ -1,4 +1,5 @@
-from TwitterSearcher import TwitterSearcher
+from TwitterSearcher import TwitterSearcher,write_list_to_file
+
 
 def main():
     twitter_searcher = TwitterSearcher()
