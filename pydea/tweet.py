@@ -14,13 +14,18 @@ class Tweet:
         return "Hash: {0}, User: {1}, Tweet: {2}, Timestamp: {3}".format(self.hash, self.user,
                                                                          self.tweet, self.timestamp)
 
+    def initialize_manually(self, user, tweet, timestamp):
+        self.user = user
+        self.tweet = tweet
+        self.timestamp = timestamp
+
     def initialize_from_tweet(self, user, tweet, timestamp):
 
         def hash_tweet(text):
             return hashlib.md5(str(text).encode()).hexdigest()
 
         def tweet_cleanup(text):
-            #TODO Improve tweet cleanup
+            # TODO Improve tweet cleanup
             cleaned_tweet = str(text)
             cleaned_tweet = re.sub(
                 r'[.,"!]+', '', cleaned_tweet, flags=re.MULTILINE)  # Punctuation marks

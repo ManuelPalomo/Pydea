@@ -103,3 +103,4 @@ ENV/
 #Personal
 config.xml
 test.txt
+pydea.db

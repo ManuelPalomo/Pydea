@@ -28,7 +28,7 @@ class TwitterSearcher:
 
     def __init__(self):
         self.twitter_keys = TwitterSearcher.TwitterKeys()
-        self.twitter_keys.parse_config_file("../config.xml")
+        self.twitter_keys.parse_config_file("config.xml")
         self.api = get_api(self.twitter_keys)
 
     def simple_search(self, number):
