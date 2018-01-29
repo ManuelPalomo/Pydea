@@ -1,6 +1,7 @@
 from xml.dom import minidom
 import twitter
 
+
 class TwitterSearcher:
 
     class TwitterKeys:
@@ -25,26 +26,26 @@ class TwitterSearcher:
             self.access_token = keys[2].attributes[ACCESS_TOKEN_TAG].value
             self.access_token_secret = keys[3].attributes[ACCESS_TOKEN_SECRET_TAG].value
 
-
-
     def __init__(self):
         self.twitter_keys = TwitterSearcher.TwitterKeys()
         self.twitter_keys.parse_config_file("config.xml")
         self.api = get_api(self.twitter_keys)
 
-
-    def simple_search(self):
-        return self.api.GetSearch(raw_query = "q=should%20be%20an%20app&count=100")
+    def simple_search(self, number):
+        return self.api.GetSearch(raw_query="q=should%20be%20an%20app&count={0}".format(number))
 
     def search_by_date(self, start_date, end_date):
-        query = 'q=should%20be%20an%20app%20since%3A{}%20until%3A{}&count=100'.format(start_date, end_date)
-        return self.api.GetSearch(raw_query = query)
+        query = 'q=should%20be%20an%20app%20since%3A{0}%20until%3A{1}&count=100'.format(
+            start_date, end_date)
+        return self.api.GetSearch(raw_query=query)
+
 
 def write_list_to_file(content_list, filename):
     file = open(filename, 'w')
     for element in content_list:
         file.write(str(element))
     file.close()
+
 
 def get_api(twitter_keys):
     return twitter.Api(twitter_keys.consumer_key, twitter_keys.consumer_secret,
