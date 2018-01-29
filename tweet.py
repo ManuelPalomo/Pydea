@@ -1,7 +1,5 @@
 import hashlib
 import re
-import html.parser
-
 
 
 class Tweet:
@@ -22,7 +20,7 @@ class Tweet:
             return hashlib.md5(str(text).encode()).hexdigest()
 
         def tweet_cleanup(text):
-          #  cleaned_tweet = html.parser.HTMLParser().unescape(tweet)
+            #TODO Improve tweet cleanup
             cleaned_tweet = str(text)
             cleaned_tweet = re.sub(
                 r'[.,"!]+', '', cleaned_tweet, flags=re.MULTILINE)  # Punctuation marks

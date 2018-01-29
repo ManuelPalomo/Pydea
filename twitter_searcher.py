@@ -18,8 +18,8 @@ class TwitterSearcher:
             ACCESS_TOKEN_SECRET_TAG = "AccessTokenSecret"
             KEYS = "Key"
 
-            keysXML = minidom.parse(filename)
-            keys = keysXML.getElementsByTagName(KEYS)
+            keys_XML = minidom.parse(filename)
+            keys = keys_XML.getElementsByTagName(KEYS)
 
             self.consumer_key = keys[0].attributes[CONSUMER_KEY_TAG].value
             self.consumer_secret = keys[1].attributes[CONSUMER_SECRET_TAG].value
