@@ -1,3 +1,8 @@
+"""
+This module contains all clases and functions used to retrieve and query
+Tweets from the Twitter API using python-twitter
+
+"""
 from xml.dom import minidom
 import twitter
 

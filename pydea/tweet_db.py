@@ -2,10 +2,11 @@
 This module contains all the database-related classes and
 functions used to store and retrieve tweets
 
- Todo:
+ TODO:
     *Move database_name to config.xml
 """
 import sqlite3
+from tweet import Tweet
 
 
 class Database:
@@ -14,11 +15,11 @@ class Database:
         self.testmode = testmode
 
     def connect(self):
-        DATABASE_NAME = "pydea.db"
+        database_name = "pydea.db"
         if self.testmode:
             self.connection = sqlite3.connect(":memory:")
         else:
-            self.connection = sqlite3.connect(DATABASE_NAME)
+            self.connection = sqlite3.connect(database_name)
 
     def query(self, sql: str):
         try:
@@ -44,16 +45,16 @@ def initialize_database(database):
         None
     """
     def create_table_tweet(db):
-        QUERY = ('CREATE TABLE IF NOT EXISTS Tweet('
-                 'id INTEGER PRIMARY KEY AUTOINCREMENT,'
-                 'hash TEXT UNIQUE NOT NULL,'
-                 'user TEXT NOT NULL,'
-                 'tweet TEXT NOT NULL,'
-                 'timestamp DATETIME DEFAULT CURRENT_TIMESTAMP'
-                 ')')
-        INDEX_QUERY = "CREATE INDEX hash_index ON Tweet(hash)"
-        db.query(QUERY)
-        db.query(INDEX_QUERY)
+        tweet_create_table_query = ('CREATE TABLE IF NOT EXISTS Tweet('
+                                    'id INTEGER PRIMARY KEY AUTOINCREMENT,'
+                                    'hash TEXT UNIQUE NOT NULL,'
+                                    'user TEXT NOT NULL,'
+                                    'tweet TEXT NOT NULL,'
+                                    'timestamp DATETIME DEFAULT CURRENT_TIMESTAMP'
+                                    ')')
+        index_query = "CREATE INDEX hash_index ON Tweet(hash)"
+        db.query(tweet_create_table_query)
+        db.query(index_query)
 
     create_table_tweet(database)
 
@@ -80,3 +81,27 @@ def insert_tweet(database, tweet):
         tweet.hash, tweet.user, tweet.tweet, tweet.timestamp)
     database.query(insert_tweet_query)
     return True
+
+def get_tweet(database, tweet_id):
+    """
+    Gets the tweet specified by the argument id
+
+    Args:
+        database (Database): Database in which the tweet has to be looked for
+        tweet_id (int): id of the tweet to be retrieved
+
+    Returns:
+        Tweet: If exists, a tweet will be returned
+    """
+    select_query = "SELECT * FROM Tweet WHERE id = {0}".format(tweet_id)
+    cursor = database.query(select_query)
+    row = cursor.fetchone()
+
+    user = row[1]
+    tweet_hash = row[2]
+    tweet = row[3]
+    timestamp = row[4]
+
+    retrieved_tweet = Tweet()
+    retrieved_tweet.initialize_manually(user, tweet_hash, tweet, timestamp)
+    return retrieved_tweet

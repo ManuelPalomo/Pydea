@@ -1,4 +1,7 @@
-from twitter_searcher import TwitterSearcher,write_list_to_file
+"""
+Main Module
+"""
+from twitter_searcher import TwitterSearcher, write_list_to_file
 def main():
     searcher = TwitterSearcher()
     write_list_to_file(searcher.simple_search(1), 'test.txt')
