@@ -14,7 +14,8 @@ class Tweet:
         return "Hash: {0}, User: {1}, Tweet: {2}, Timestamp: {3}".format(self.hash, self.user,
                                                                          self.tweet, self.timestamp)
 
-    def initialize_manually(self, user, tweet, timestamp):
+    def initialize_manually(self, hash, user, tweet, timestamp):
+        self.hash = hash
         self.user = user
         self.tweet = tweet
         self.timestamp = timestamp

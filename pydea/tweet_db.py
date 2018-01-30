@@ -1,3 +1,10 @@
+"""
+This module contains all the database-related classes and
+functions used to store and retrieve tweets
+
+ Todo:
+    *Move database_name to config.xml
+"""
 import sqlite3
 
 
@@ -7,7 +14,6 @@ class Database:
         self.testmode = testmode
 
     def connect(self):
-        # TODO Move database_name to config.xml
         DATABASE_NAME = "pydea.db"
         if self.testmode:
             self.connection = sqlite3.connect(":memory:")
@@ -28,23 +34,49 @@ class Database:
 
 
 def initialize_database(database):
+    """
+    Initializes the needed tables for the operation of pydea
+
+    Args:
+        database(Database): Database to be initialized
+
+    Returns:
+        None
+    """
     def create_table_tweet(db):
-        QUERY = "CREATE TABLE IF NOT EXISTS Tweet(id INTEGER PRIMARY KEY AUTOINCREMENT,hash TEXT NOT NULL,tweet TEXT NOT NULL,timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)"
-        cursor = db.query(QUERY)
+        QUERY = ('CREATE TABLE IF NOT EXISTS Tweet('
+                 'id INTEGER PRIMARY KEY AUTOINCREMENT,'
+                 'hash TEXT UNIQUE NOT NULL,'
+                 'user TEXT NOT NULL,'
+                 'tweet TEXT NOT NULL,'
+                 'timestamp DATETIME DEFAULT CURRENT_TIMESTAMP'
+                 ')')
+        INDEX_QUERY = "CREATE INDEX hash_index ON Tweet(hash)"
+        db.query(QUERY)
+        db.query(INDEX_QUERY)
 
     create_table_tweet(database)
 
 
 def insert_tweet(database, tweet):
-    check_if_exists_query = "SELECT * FROM Tweet WHERE hash = {0}".format(
+    """
+    Checks if the tweet hash exists, if not, inserts it
+
+    Args:
+        database (Database): Database in which the tweet has to be inserted
+        tweet (Tweet): Tweet to be inserted
+
+    Returns:
+        bool: True if inserted, false if otherwise
+    """
+    check_if_exists_query = "SELECT * FROM Tweet WHERE hash = '{0}'".format(
         tweet.hash)
 
     cursor = database.query(check_if_exists_query)
-    if cursor.rowcount() != 0:
+    if len(cursor.fetchall()) != 0:
         return False
 
-    insert_tweet_query = "INSERT INTO Tweet (hash, tweet, timestamp) VALUES({0},{1},{2})".format(
-        tweet.hash, tweet.tweet, tweet.timestamp)
-
+    insert_tweet_query = "INSERT INTO Tweet(hash, user, tweet, timestamp) VALUES('{0}','{1}','{2}','{3}')".format(
+        tweet.hash, tweet.user, tweet.tweet, tweet.timestamp)
     database.query(insert_tweet_query)
     return True
