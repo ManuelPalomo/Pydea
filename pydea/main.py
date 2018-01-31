@@ -1,11 +1,9 @@
 """
 Main Module
 """
-from twitter_searcher import TwitterSearcher, write_list_to_file
+from menu import menu
 def main():
-    searcher = TwitterSearcher()
-    write_list_to_file(searcher.simple_search(1), 'test.txt')
-
+    menu()
 
 if __name__ == "__main__":
     main()
