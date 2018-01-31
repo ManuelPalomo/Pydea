@@ -2,17 +2,17 @@
 This module contains all the database-related classes and
 functions used to store and retrieve tweets
 
- TODO:
-    *Move database_name to config.xml
 """
 import sqlite3
 from tweet import Tweet
+from config_parser import ConfigParser
 
 
 class Database:
     def __init__(self, testmode):
         self.connection = None
         self.testmode = testmode
+        self.database_name = ConfigParser.get_instance("config.xml").database_name
 
     def connect(self):
         database_name = "pydea.db"
@@ -81,6 +81,7 @@ def insert_tweet(database, tweet):
         tweet.hash, tweet.user, tweet.tweet, tweet.timestamp)
     database.query(insert_tweet_query)
     return True
+
 
 def get_tweet(database, tweet_id):
     """

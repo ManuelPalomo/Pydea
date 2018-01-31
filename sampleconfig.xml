@@ -4,5 +4,6 @@
     <Key ConsumerSecret=""/>
     <Key AccessToken=""/>
     <Key AccessTokenSecret=""/>
+    <Key DatabaseName=""/>
   </Keys>
 </Configuration>

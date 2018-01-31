@@ -2,12 +2,17 @@
 Test module
 """
 import unittest
+from config_parser import ConfigParser
 from tweet import Tweet
 from twitter_searcher import TwitterSearcher
 from tweet_db import Database, initialize_database, insert_tweet, get_tweet
 
 
 class TestMethods(unittest.TestCase):
+
+    def test_config_parser(self):
+        config_parser = ConfigParser.get_instance("config.xml")
+        self.assertIsNotNone(config_parser.database_name)
 
     def test_tweet_retrieval(self):
         twitter_searcher = TwitterSearcher()
