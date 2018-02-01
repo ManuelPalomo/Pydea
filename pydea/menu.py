@@ -5,7 +5,12 @@ TODO:
     *Implement database_startup
     *Implement tweet_capture
 """
-LOGO = """ 
+import os.path
+from config_parser import ConfigParser
+from tweet_db import Database, initialize_database
+
+LOGO = """
+
                           /$$        
                           | $$                    
   /$$$$$$  /$$   /$$  /$$$$$$$  /$$$$$$   /$$$$$$ 
@@ -20,6 +25,7 @@ LOGO = """
                              
 by Manuel Palomo
  """
+
 
 def menu():
     print(LOGO)
@@ -44,11 +50,29 @@ def _execute_menu(choice):
 
 
 def database_startup():
-    pass
+    config_parser = ConfigParser.get_instance("config.xml")
+    if os.path.isfile(config_parser.database_name):
+        print("{0} database already exists".format(
+            config_parser.database_name))
+        choice = input("Continue?(This will erase the database)(Y/N)")
+        if choice.lower() != 'y':
+            MENU_ACTIONS['main']()
+        else:
+            os.remove(config_parser.database_name)
+            database = Database(False)
+            initialize_database(database)
+            print("Database initialized")
+            MENU_ACTIONS['main']()
+    else:
+        database = Database(False)
+        initialize_database(database)
+        print("Database initialized")
+        MENU_ACTIONS['main']()
 
 
 def tweet_capture():
     pass
+
 
 MENU_ACTIONS = {
     'main': menu,
