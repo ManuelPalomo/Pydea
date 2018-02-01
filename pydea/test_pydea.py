@@ -34,7 +34,8 @@ class TestMethods(unittest.TestCase):
         db.connect()
         initialize_database(db)
 
-        cursor = db.query("SELECT name FROM sqlite_master WHERE type='table' AND name='Tweet'")
+        cursor = db.query(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='Tweet'")
         self.assertTrue(cursor.rowcount != 0)
 
         test_tweet = Tweet()
@@ -44,6 +45,7 @@ class TestMethods(unittest.TestCase):
 
         retrieved_tweet = get_tweet(db, 1)
         self.assertIsNotNone(retrieved_tweet)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -12,7 +12,8 @@ class Database:
     def __init__(self, testmode):
         self.connection = None
         self.testmode = testmode
-        self.database_name = ConfigParser.get_instance("config.xml").database_name
+        self.database_name = ConfigParser.get_instance(
+            "config.xml").database_name
 
     def connect(self):
         database_name = "pydea.db"
@@ -51,8 +52,8 @@ def initialize_database(database):
                                     'user TEXT NOT NULL,'
                                     'tweet TEXT NOT NULL,'
                                     'timestamp DATETIME DEFAULT CURRENT_TIMESTAMP'
-                                    ')')
-        index_query = "CREATE INDEX hash_index ON Tweet(hash)"
+                                    ');')
+        index_query = "CREATE INDEX hash_index ON Tweet(hash);"
         db.query(tweet_create_table_query)
         db.query(index_query)
 
@@ -78,7 +79,7 @@ def insert_tweet(database, tweet):
         return False
 
     insert_tweet_query = "INSERT INTO Tweet(hash, user, tweet, timestamp) VALUES('{0}','{1}','{2}','{3}')".format(
-        tweet.hash, tweet.user, tweet.tweet, tweet.timestamp)
+        tweet.hash, tweet.user, tweet.tweet.replace("'", "''"), tweet.timestamp)
     database.query(insert_tweet_query)
     return True
 

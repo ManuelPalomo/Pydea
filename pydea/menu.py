@@ -7,7 +7,9 @@ TODO:
 """
 import os.path
 from config_parser import ConfigParser
-from tweet_db import Database, initialize_database
+from tweet_db import Database, initialize_database, insert_tweet
+from twitter_searcher import TwitterSearcher
+from tweet import Tweet
 
 LOGO = """
 
@@ -25,6 +27,7 @@ LOGO = """
                              
 by Manuel Palomo
  """
+config_parser = ConfigParser.get_instance("config.xml")
 
 
 def menu():
@@ -49,9 +52,8 @@ def _execute_menu(choice):
             MENU_ACTIONS['main']()
 
 
-def database_startup():
-    config_parser = ConfigParser.get_instance("config.xml")
-    if os.path.isfile(config_parser.database_name):
+def _database_startup():
+    if _database_exists():
         print("{0} database already exists".format(
             config_parser.database_name))
         choice = input("Continue?(This will erase the database)(Y/N)")
@@ -70,13 +72,42 @@ def database_startup():
         MENU_ACTIONS['main']()
 
 
-def tweet_capture():
-    pass
+def _database_exists():
+    return os.path.isfile(config_parser.database_name)
+
+
+def _tweet_capture():
+    if not _database_exists():
+        print("Database not initialized, run 'Database Startup' to continue")
+        MENU_ACTIONS['main']()
+
+    choice = int(input("How many tweets do you want to capture?(99 max): "))
+    if choice > 0 and choice <= 99:
+        twitter_searcher = TwitterSearcher()
+        tweet_list = twitter_searcher.simple_search(choice)
+        database = Database(False)
+
+        for retrieved_tweet in tweet_list:
+            _save_tweet(retrieved_tweet, database)
+    else:
+        print("Error, wrong number")
+        MENU_ACTIONS['main']()
+
+
+def _save_tweet(retrieved_tweet, database):
+    user = retrieved_tweet.user.name
+    text = retrieved_tweet.text
+    timestamp = retrieved_tweet.created_at
+
+    tweet = Tweet()
+    tweet.initialize_from_tweet(user, text, timestamp)
+        
+    insert_tweet(database, tweet)
 
 
 MENU_ACTIONS = {
     'main': menu,
-    '1': database_startup,
-    '2': tweet_capture,
+    '1': _database_startup,
+    '2': _tweet_capture,
     '0': exit,
 }
