@@ -96,13 +96,12 @@ def _tweet_capture():
 
 def _save_tweet(retrieved_tweet, database):
     user = retrieved_tweet.user.name
-    text = retrieved_tweet.text
+    text = retrieved_tweet.full_text
     timestamp = retrieved_tweet.created_at
 
     tweet = Tweet()
-    tweet.initialize_from_tweet(user, text, timestamp)
-        
-    insert_tweet(database, tweet)
+    tweet.initialize_from_tweet(user, text, timestamp)    
+    insert_tweet(database,tweet)
 
 
 MENU_ACTIONS = {

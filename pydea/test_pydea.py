@@ -21,7 +21,7 @@ class TestMethods(unittest.TestCase):
         retrieved_tweet = tweet_list[0]
 
         user = retrieved_tweet.user.name
-        text = retrieved_tweet.text
+        text = retrieved_tweet.full_text
         timestamp = retrieved_tweet.created_at
 
         tweet = Tweet()

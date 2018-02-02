@@ -39,4 +39,4 @@ def write_list_to_file(content_list, filename):
 
 def get_api(twitter_keys):
     return twitter.Api(twitter_keys.consumer_key, twitter_keys.consumer_secret,
-                       twitter_keys.access_token, twitter_keys.access_token_secret)
+                       twitter_keys.access_token, twitter_keys.access_token_secret, tweet_mode='extended')

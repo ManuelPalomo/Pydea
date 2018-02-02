@@ -34,6 +34,10 @@ class Database:
             self.connection.commit()
         return cursor
 
+    def insert_tweet_safe_query(self, tweet):
+        cursor = self.connection.cursor()
+        cursor.execute("INSERT INTO Tweet(hash, user, tweet, timestamp) VALUES(?,?,?,?)", (tweet.hash, tweet.user, tweet.tweet, tweet.timestamp))
+
 
 def initialize_database(database):
     """
@@ -78,9 +82,7 @@ def insert_tweet(database, tweet):
     if len(cursor.fetchall()) != 0:
         return False
 
-    insert_tweet_query = "INSERT INTO Tweet(hash, user, tweet, timestamp) VALUES('{0}','{1}','{2}','{3}')".format(
-        tweet.hash, tweet.user, tweet.tweet.replace("'", "''"), tweet.timestamp)
-    database.query(insert_tweet_query)
+    database.insert_tweet_safe_query(tweet)
     return True
 
 
