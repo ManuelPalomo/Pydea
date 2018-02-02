@@ -2,8 +2,6 @@
 This module contains all clases and functions used to store,
 clean and manage Tweets
 
-TODO:
-    Improve tweet cleanup
 """
 import hashlib
 import re
@@ -33,16 +31,20 @@ class Tweet:
             return hashlib.md5(str(text).encode()).hexdigest()
 
         def tweet_cleanup(text):
-            cleaned_tweet = str(text)
-            cleaned_tweet = re.sub(
-                r'[.,"!]+', '', cleaned_tweet, flags=re.MULTILINE)  # Punctuation marks
-            cleaned_tweet = re.sub(
-                r'^RT[\s]+', '', cleaned_tweet, flags=re.MULTILINE)  # Retweets
-            cleaned_tweet = re.sub(
-                r'https?:\/\/.*[\r\n]*', '', cleaned_tweet, flags=re.MULTILINE)  # Links
-            cleaned_tweet = re.sub(
-                r'^RT[\s]+', '', cleaned_tweet, flags=re.MULTILINE)  # Retweets
 
+            URL_PATTERN = re.compile(
+                r'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?\xab\xbb\u201c\u201d\u2018\u2019]))')
+            HASHTAG_PATTERN = re.compile(r'#\w*')
+            MENTION_PATTERN = re.compile(r'@\w*')
+            RESERVED_WORDS_PATTERN = re.compile(r'^(RT|FAV)')
+            SMILEYS_PATTERN = re.compile(
+                r"(?:X|:|;|=)(?:-)?(?:\)|\(|O|D|P|S){1,}", re.IGNORECASE)
+
+            cleaned_tweet = URL_PATTERN.sub('', text)
+            cleaned_tweet = HASHTAG_PATTERN.sub('', cleaned_tweet)
+            cleaned_tweet = MENTION_PATTERN.sub('', cleaned_tweet)
+            cleaned_tweet = RESERVED_WORDS_PATTERN.sub('', cleaned_tweet)
+            cleaned_tweet = SMILEYS_PATTERN.sub('', cleaned_tweet)
             cleaned_tweet = cleaned_tweet.lower()
             return cleaned_tweet
 
