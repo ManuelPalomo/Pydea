@@ -1,13 +1,10 @@
 """
 This module unifies all the operations that could be done with pydea
 
-TODO:
-    *Implement database_startup
-    *Implement tweet_capture
 """
 import os.path
 from config_parser import ConfigParser
-from tweet_db import Database, initialize_database, insert_tweet
+from tweet_db import Database, initialize_database, insert_tweet, get_latest_tweet
 from twitter_searcher import TwitterSearcher
 from tweet import Tweet
 
@@ -36,6 +33,7 @@ def menu():
     print("Select the operation you want to perform")
     print("1:Database Startup")
     print("2.Tweet Capture")
+    print("3.Date Tweet Capture")
     print("0.Quit")
     choice = input("State your choice: ")
     _execute_menu(choice)
@@ -94,19 +92,44 @@ def _tweet_capture():
         MENU_ACTIONS['main']()
 
 
+def _date_tweet_capture():
+    if not _database_exists():
+        print("Database not initialized, run 'Database Startup' to continue")
+        MENU_ACTIONS['main']()
+
+    choice = int(input("How many tweets do you want to capture?(99 max): "))
+    if choice > 0 and choice <= 99:
+        twitter_searcher = TwitterSearcher()
+        database = Database(False)
+        tweet_list = twitter_searcher.search_by_date(
+            choice, _get_last_tweet_date(database))
+
+        for retrieved_tweet in tweet_list:
+            _save_tweet(retrieved_tweet, database)
+    else:
+        print("Error, wrong number")
+        MENU_ACTIONS['main']()
+
+
+def _get_last_tweet_date(database):
+    tweet = get_latest_tweet(database)
+    return tweet.timestamp
+
+
 def _save_tweet(retrieved_tweet, database):
     user = retrieved_tweet.user.name
     text = retrieved_tweet.full_text
     timestamp = retrieved_tweet.created_at
 
     tweet = Tweet()
-    tweet.initialize_from_tweet(user, text, timestamp)    
-    insert_tweet(database,tweet)
+    tweet.initialize_from_tweet(user, text, timestamp)
+    insert_tweet(database, tweet)
 
 
 MENU_ACTIONS = {
     'main': menu,
     '1': _database_startup,
     '2': _tweet_capture,
+    '3': _date_tweet_capture,
     '0': exit,
 }

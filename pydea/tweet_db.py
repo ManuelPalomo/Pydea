@@ -2,6 +2,9 @@
 This module contains all the database-related classes and
 functions used to store and retrieve tweets
 
+TODO:
+    *get_tweet_by_date: Ordering function ASC not working properly, datetime should be converted
+    to an standard date format
 """
 import sqlite3
 from tweet import Tweet
@@ -36,7 +39,8 @@ class Database:
 
     def insert_tweet_safe_query(self, tweet):
         cursor = self.connection.cursor()
-        cursor.execute("INSERT INTO Tweet(hash, user, tweet, timestamp) VALUES(?,?,?,?)", (tweet.hash, tweet.user, tweet.tweet, tweet.timestamp))
+        cursor.execute("INSERT INTO Tweet(hash, user, tweet, timestamp) VALUES(?,?,?,?)",
+                       (tweet.hash, tweet.user, tweet.tweet, tweet.timestamp))
 
 
 def initialize_database(database):
@@ -101,6 +105,17 @@ def get_tweet(database, tweet_id):
     cursor = database.query(select_query)
     row = cursor.fetchone()
 
+    return _parse_query_to_tweet(row)
+
+
+def get_latest_tweet(database):
+    select_query = "SELECT * FROM Tweet ORDER BY datetime(timestamp) ASC LIMIT 1"
+    cursor = database.query(select_query)
+    row = cursor.fetchone()
+    return _parse_query_to_tweet(row)
+
+
+def _parse_query_to_tweet(row):
     user = row[1]
     tweet_hash = row[2]
     tweet = row[3]
@@ -108,4 +123,5 @@ def get_tweet(database, tweet_id):
 
     retrieved_tweet = Tweet()
     retrieved_tweet.initialize_manually(user, tweet_hash, tweet, timestamp)
+    print(retrieved_tweet.timestamp)
     return retrieved_tweet

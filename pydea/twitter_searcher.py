@@ -24,9 +24,9 @@ class TwitterSearcher:
     def simple_search(self, number):
         return self.api.GetSearch(raw_query="q=should%20be%20an%20app&count={0}".format(number))
 
-    def search_by_date(self, start_date, end_date):
-        query = 'q=should%20be%20an%20app%20since%3A{0}%20until%3A{1}&count=100'.format(
-            start_date, end_date)
+    def search_by_date(self, number, start_date):
+        query = "q=should%20be%20an%20app%20since%3A{0}&count={1}".format(
+            start_date, number)
         return self.api.GetSearch(raw_query=query)
 
 
