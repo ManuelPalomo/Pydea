@@ -1,11 +1,15 @@
 """
 Main Module
 """
-from menu import menu
+import sys
+from menu import menu, console_execution
 
 
 def main():
-    menu()
+    if len(sys.argv) > 1:
+        console_execution()
+    else:
+        menu()
 
 
 if __name__ == "__main__":

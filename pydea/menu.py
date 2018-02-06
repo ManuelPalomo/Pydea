@@ -39,6 +39,13 @@ def menu():
     _execute_menu(choice)
 
 
+def console_execution():
+    print(LOGO)
+    print()
+    print("Starting tweet capture")
+    _tweet_capture(99)
+
+
 def _execute_menu(choice):
     if choice == "":
         MENU_ACTIONS['main']()
@@ -74,19 +81,29 @@ def _database_exists():
     return os.path.isfile(config_parser.database_name)
 
 
-def _tweet_capture():
+def _tweet_capture(choice=-1):
     if not _database_exists():
         print("Database not initialized, run 'Database Startup' to continue")
         MENU_ACTIONS['main']()
 
-    choice = int(input("How many tweets do you want to capture?(99 max): "))
+    if choice == -1:
+        choice = int(
+            input("How many tweets do you want to capture?(99 max): "))
+
     if choice > 0 and choice <= 99:
         twitter_searcher = TwitterSearcher()
         tweet_list = twitter_searcher.simple_search(choice)
         database = Database(False)
 
+        inserted_tweets = 0
+        failed_tweets = 0
         for retrieved_tweet in tweet_list:
-            _save_tweet(retrieved_tweet, database)
+            if _save_tweet(retrieved_tweet, database):
+                inserted_tweets += 1
+            else:
+                failed_tweets += 1
+        print("{0} tweets inserted, {1} tweets were already in the database".format(
+            inserted_tweets, failed_tweets))
     else:
         print("Error, wrong number")
         MENU_ACTIONS['main']()
@@ -104,8 +121,15 @@ def _date_tweet_capture():
         tweet_list = twitter_searcher.search_by_date(
             choice, _get_last_tweet_date(database))
 
+        inserted_tweets = 0
+        failed_tweets = 0
         for retrieved_tweet in tweet_list:
-            _save_tweet(retrieved_tweet, database)
+            if _save_tweet(retrieved_tweet, database):
+                inserted_tweets += 1
+            else:
+                failed_tweets += 1
+        print("{0} tweets inserted, {1} tweets were already in the database".format(
+            inserted_tweets, failed_tweets))
     else:
         print("Error, wrong number")
         MENU_ACTIONS['main']()
@@ -123,7 +147,7 @@ def _save_tweet(retrieved_tweet, database):
 
     tweet = Tweet()
     tweet.initialize_from_tweet(user, text, timestamp)
-    insert_tweet(database, tweet)
+    return insert_tweet(database, tweet)
 
 
 MENU_ACTIONS = {
