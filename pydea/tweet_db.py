@@ -1,10 +1,6 @@
 """
 This module contains all the database-related classes and
 functions used to store and retrieve tweets
-
-TODO:
-    *get_tweet_by_date: Ordering function ASC not working properly, datetime should be converted
-    to an standard date format
 """
 import sqlite3
 from tweet import Tweet
@@ -109,7 +105,7 @@ def get_tweet(database, tweet_id):
 
 
 def get_latest_tweet(database):
-    select_query = "SELECT * FROM Tweet ORDER BY datetime(timestamp) ASC LIMIT 1"
+    select_query = "SELECT * FROM Tweet ORDER BY datetime(substr(timestamp,8,18)+substr(timestamp,25,29)) DESC LIMIT 1"
     cursor = database.query(select_query)
     row = cursor.fetchone()
     return _parse_query_to_tweet(row)
