@@ -14,6 +14,15 @@ class Database:
         self.database_name = ConfigParser.get_instance(
             "config.xml").database_name
 
+    """
+    Initializes the connection object by connecting the sqlite object to the 
+    database or memory depending on mode of operation
+
+    Args:
+    Returns:
+        None
+    """
+
     def connect(self):
         database_name = "pydea.db"
         if self.testmode:

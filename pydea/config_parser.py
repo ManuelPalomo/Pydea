@@ -4,7 +4,8 @@ This module contains all clases and functions used to parse and process the conf
 from xml.dom import minidom
 
 """
-Singleton class that loads all the keys from config.xml, use get_instance
+Singleton class that loads all the keys from config.xml, use get_instance for 
+instancing it
 """
 
 
@@ -29,6 +30,7 @@ class ConfigParser:
         self.access_token = None
         self.access_token_secret = None
         self.database_name = None
+        self.external_database_api_url = None
         self._parse_config()
 
     def _parse_config(self):
@@ -37,6 +39,7 @@ class ConfigParser:
         ACCESS_TOKEN_TAG = "AccessToken"
         ACCESS_TOKEN_SECRET_TAG = "AccessTokenSecret"
         DATABASE_NAME = "DatabaseName"
+        EXTERNAL_DATABASE_API = "ExternalDatabaseAPIURL"
         KEYS = "Key"
 
         keys_XML = minidom.parse(self.filename)
@@ -47,3 +50,4 @@ class ConfigParser:
         self.access_token = keys[2].attributes[ACCESS_TOKEN_TAG].value
         self.access_token_secret = keys[3].attributes[ACCESS_TOKEN_SECRET_TAG].value
         self.database_name = keys[4].attributes[DATABASE_NAME].value
+        self.external_database_api_url = keys[5].attributes[EXTERNAL_DATABASE_API].value
