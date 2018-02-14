@@ -14,16 +14,11 @@ class Database:
         self.database_name = ConfigParser.get_instance(
             "config.xml").database_name
 
-    """
-    Initializes the connection object by connecting the sqlite object to the 
-    database or memory depending on mode of operation
-
-    Args:
-    Returns:
-        None
-    """
-
     def connect(self):
+        """
+        Initializes the connection object by connecting the sqlite object to the
+        database or memory depending on mode of operation
+        """
         database_name = "pydea.db"
         if self.testmode:
             self.connection = sqlite3.connect(":memory:")
@@ -31,6 +26,15 @@ class Database:
             self.connection = sqlite3.connect(database_name)
 
     def query(self, sql: str):
+        """
+        Performs a simple non parametrized query
+
+        Args:
+            sql (str): The query to be executed
+
+        Returns:
+            Cursor: A cursor with the executed query
+        """
         try:
             cursor = self.connection.cursor()
             cursor.execute(sql)
@@ -43,6 +47,15 @@ class Database:
         return cursor
 
     def insert_tweet_safe_query(self, tweet):
+        """
+        Performs a insert parametrized query
+
+        Args:
+            tweet (Tweet): The tweet to be inserted
+
+        Returns:
+            None
+        """
         cursor = self.connection.cursor()
         cursor.execute("INSERT INTO Tweet(hash, user, tweet, timestamp) VALUES(?,?,?,?)",
                        (tweet.hash, tweet.user, tweet.tweet, tweet.timestamp))
@@ -58,7 +71,7 @@ def initialize_database(database):
     Returns:
         None
     """
-    def create_table_tweet(db):
+    def _create_table_tweet(db):
         tweet_create_table_query = ('CREATE TABLE IF NOT EXISTS Tweet('
                                     'id INTEGER PRIMARY KEY AUTOINCREMENT,'
                                     'hash TEXT UNIQUE NOT NULL,'
@@ -70,7 +83,7 @@ def initialize_database(database):
         db.query(tweet_create_table_query)
         db.query(index_query)
 
-    create_table_tweet(database)
+    _create_table_tweet(database)
 
 
 def insert_tweet(database, tweet):
@@ -114,6 +127,14 @@ def get_tweet(database, tweet_id):
 
 
 def get_latest_tweet(database):
+    """
+    Searches the database for the latest inserted tweet by date
+
+    Args:
+        database (Database): Database to be queried
+    Returns:
+        Tweet
+    """
     select_query = "SELECT * FROM Tweet ORDER BY datetime(substr(timestamp,8,18)+substr(timestamp,25,29)) DESC LIMIT 1"
     cursor = database.query(select_query)
     row = cursor.fetchone()

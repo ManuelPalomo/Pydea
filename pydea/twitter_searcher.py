@@ -8,7 +8,9 @@ from config_parser import ConfigParser
 
 
 class TwitterSearcher:
-
+    """
+    Wrapper with the Twitter API class in order to simplify operation
+    """
     class TwitterKeys:
         def __init__(self):
             config_parser = ConfigParser.get_instance("config.xml")
@@ -22,6 +24,15 @@ class TwitterSearcher:
         self.api = get_api(self.twitter_keys)
 
     def simple_search(self, number):
+        """
+        Performs a twitter search using the twitter API with the prefixed search string
+
+        Args:
+            Number(int): 0-99, number of tweets to be retrieved
+
+        Returns:
+            List(Twitter_Status): Retrieved tweets
+        """
         return self.api.GetSearch(raw_query="q=should%20be%20an%20app&count={0}".format(number))
 
     def search_by_date(self, number, start_date):
@@ -32,6 +43,15 @@ class TwitterSearcher:
 
 
 def write_list_to_file(content_list, filename):
+    """
+    Writes a list to the specified file using it's _str_ method
+
+    Args:
+        filename (str): Filename to be created
+
+    Returns:
+        None
+    """
     file = open(filename, 'w')
     for element in content_list:
         file.write(str(element))
@@ -39,5 +59,13 @@ def write_list_to_file(content_list, filename):
 
 
 def get_api(twitter_keys):
+    """
+    Returns a initialized Api Twitter Python object
+
+    Args:
+        twitter_keys (TwitterKeys): Object with the necessary keys
+    Returns:
+        Api: Twitter Api object
+    """
     return twitter.Api(twitter_keys.consumer_key, twitter_keys.consumer_secret,
                        twitter_keys.access_token, twitter_keys.access_token_secret, tweet_mode='extended')

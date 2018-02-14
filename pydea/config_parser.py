@@ -4,16 +4,37 @@ This module contains all clases and functions used to parse and process the conf
 from xml.dom import minidom
 
 """
-Singleton class that loads all the keys from config.xml, use get_instance for 
+Singleton class that loads all the keys from config.xml, use get_instance for
 instancing it
 """
 
 
 class ConfigParser:
+    """
+    Gets the config.xml file and translates it to attributes
+
+    Attributes
+        filename (str): filename that has to be parsed
+        consumer_key (str): Twitter apps key
+        consumer_secret (str): Twitter apps key
+        access_token (str): Twitter apps key
+        access_token_secret (str): Twitter apps key
+        database_name (str): How should the sqlite local database be named
+        external_database_api_url (str):
+    """
     __instance = None
 
     @staticmethod
     def get_instance(filename):
+        """
+        Singleton-kind way of obtaining a instance
+
+        Args:
+            filename(str): Filename to be parsed in order to initialize this class
+
+        Returns:
+            None
+        """
         if ConfigParser.__instance is None:
             ConfigParser(filename)
         return ConfigParser.__instance
