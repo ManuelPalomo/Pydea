@@ -1,10 +1,10 @@
 """
-This module contains all clases and functions used to parse and process the configuration xml file
+This module contains all clases and functions used to parse and process the configuration ini file
 """
-from xml.dom import minidom
+from configparser import SafeConfigParser
 
 """
-Singleton class that loads all the keys from config.xml, use get_instance for
+Singleton class that loads all the keys from config.ini, use get_instance for
 instancing it
 """
 
@@ -55,20 +55,19 @@ class ConfigParser:
         self._parse_config()
 
     def _parse_config(self):
+        TWITTER_API = "twitter_API"
+        DATABASE = "database"
         CONSUMER_KEY_TAG = "ConsumerKey"
         CONSUMER_SECRET_TAG = "ConsumerSecret"
         ACCESS_TOKEN_TAG = "AccessToken"
         ACCESS_TOKEN_SECRET_TAG = "AccessTokenSecret"
         DATABASE_NAME = "DatabaseName"
-        EXTERNAL_DATABASE_API = "ExternalDatabaseAPIURL"
-        KEYS = "Key"
 
-        keys_XML = minidom.parse(self.filename)
-        keys = keys_XML.getElementsByTagName(KEYS)
-
-        self.consumer_key = keys[0].attributes[CONSUMER_KEY_TAG].value
-        self.consumer_secret = keys[1].attributes[CONSUMER_SECRET_TAG].value
-        self.access_token = keys[2].attributes[ACCESS_TOKEN_TAG].value
-        self.access_token_secret = keys[3].attributes[ACCESS_TOKEN_SECRET_TAG].value
-        self.database_name = keys[4].attributes[DATABASE_NAME].value
-        self.external_database_api_url = keys[5].attributes[EXTERNAL_DATABASE_API].value
+        config = SafeConfigParser()
+        config.read('config.ini')
+        self.consumer_key = config.get(TWITTER_API, CONSUMER_KEY_TAG)
+        self.consumer_secret = config.get(TWITTER_API, CONSUMER_SECRET_TAG)
+        self.access_token = config.get(TWITTER_API, ACCESS_TOKEN_TAG)
+        self.access_token_secret = config.get(
+            TWITTER_API, ACCESS_TOKEN_SECRET_TAG)
+        self.database_name = config.get(DATABASE, DATABASE_NAME)

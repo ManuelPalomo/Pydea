@@ -101,6 +101,7 @@ ENV/
 .mypy_cache/
 
 #Personal
+config.ini
 config.xml
 test.txt
 pydea.db
