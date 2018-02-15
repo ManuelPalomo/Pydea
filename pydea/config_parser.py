@@ -51,17 +51,19 @@ class ConfigParser:
         self.access_token = None
         self.access_token_secret = None
         self.database_name = None
-        self.external_database_api_url = None
+        self.insertURL = None
         self._parse_config()
 
     def _parse_config(self):
         TWITTER_API = "twitter_API"
         DATABASE = "database"
+        REMOTE = "remote"
         CONSUMER_KEY_TAG = "ConsumerKey"
         CONSUMER_SECRET_TAG = "ConsumerSecret"
         ACCESS_TOKEN_TAG = "AccessToken"
         ACCESS_TOKEN_SECRET_TAG = "AccessTokenSecret"
         DATABASE_NAME = "DatabaseName"
+        INSERT_URL = "InsertURL"
 
         config = SafeConfigParser()
         config.read('config.ini')
@@ -71,3 +73,4 @@ class ConfigParser:
         self.access_token_secret = config.get(
             TWITTER_API, ACCESS_TOKEN_SECRET_TAG)
         self.database_name = config.get(DATABASE, DATABASE_NAME)
+        self.insertURL = config.get(REMOTE, INSERT_URL)

@@ -78,6 +78,7 @@ def initialize_database(database):
                                     'user TEXT NOT NULL,'
                                     'tweet TEXT NOT NULL,'
                                     'timestamp DATETIME DEFAULT CURRENT_TIMESTAMP'
+                                    'sent_to_remote INTEGER DEFAULT 0 '
                                     ');')
         index_query = "CREATE INDEX hash_index ON Tweet(hash);"
         db.query(tweet_create_table_query)
