@@ -3,6 +3,9 @@ This module contains all the database-related classes and
 functions used to store and retrieve tweets
 """
 import sqlite3
+from urllib.request import Request, urlopen
+from urllib.parse import urlencode
+
 from tweet import Tweet
 from config_parser import ConfigParser
 
@@ -152,3 +155,46 @@ def _parse_query_to_tweet(row):
     retrieved_tweet.initialize_manually(user, tweet_hash, tweet, timestamp)
     print(retrieved_tweet.timestamp)
     return retrieved_tweet
+
+
+def send_tweet_to_remote(database, tweet, url):
+    """
+    Sends a tweet to the remote database via HTTP Request and sets its status as sent
+
+    Args:
+        database (Database): Database object to change status of the tweet
+        tweet (Tweet): The Tweet to be sent to remote
+        url (str): URL of the remote database
+
+    Returns:
+        status_code(int): The status code of the request
+    """
+    tweet_json = tweet.json()
+    request = Request(url, urlencode(tweet_json).encode())
+    status_code = urlopen(request).getcode()
+    _change_sent_to_remote(database, tweet)
+    return status_code
+
+
+def _change_sent_to_remote(database, tweet):
+    cursor = database.connection.cursor()
+    cursor.execute(
+        "UPDATE Tweet SET sent_to_remote = 1 WHERE id = ?", tweet.id)
+
+
+def get_all_unsent_to_remote_tweets(database):
+    """
+     Gets a list of Tweets that hasn't been sent to remote database
+
+     Args:
+        database (Database): Database to be searched
+     Returns:
+        List of Tweet
+    """
+    select_query = "SELECT * FROM Tweet WHERE sent_to_remote = 0"
+    cursor = database.query(select_query)
+    tweet_list = []
+    for row in cursor:
+        row = cursor.fetchone()
+        tweet_list.append(_parse_query_to_tweet(row))
+    return tweet_list

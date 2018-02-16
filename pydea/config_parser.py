@@ -51,7 +51,7 @@ class ConfigParser:
         self.access_token = None
         self.access_token_secret = None
         self.database_name = None
-        self.insertURL = None
+        self.insert_URL = None
         self._parse_config()
 
     def _parse_config(self):
@@ -73,4 +73,4 @@ class ConfigParser:
         self.access_token_secret = config.get(
             TWITTER_API, ACCESS_TOKEN_SECRET_TAG)
         self.database_name = config.get(DATABASE, DATABASE_NAME)
-        self.insertURL = config.get(REMOTE, INSERT_URL)
+        self.insert_URL = config.get(REMOTE, INSERT_URL)

@@ -85,3 +85,15 @@ class Tweet:
         self.user = user
         self.tweet = _tweet_cleanup(tweet)
         self.timestamp = timestamp
+
+        def json(self):
+            """
+            Converts the tweet to json
+            """
+            return {
+                "id": self.id,
+                "hash": self.hash,
+                "user": self.user,
+                "tweet": self.tweet,
+                "timestamp": self.timestamp
+            }

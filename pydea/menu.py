@@ -1,10 +1,10 @@
 """
-This module unifies all the operations that could be done with pydea
+This module unifies all the operations that can be done with pydea
 
 """
 import os.path
 from config_parser import ConfigParser
-from tweet_db import Database, initialize_database, insert_tweet, get_latest_tweet
+from tweet_db import Database, initialize_database, insert_tweet, get_latest_tweet, get_all_unsent_to_remote_tweets, send_tweet_to_remote
 from twitter_searcher import TwitterSearcher
 from tweet import Tweet
 
@@ -150,10 +150,23 @@ def _save_tweet(retrieved_tweet, database):
     return insert_tweet(database, tweet)
 
 
+def _send_all_tweet_to_remote():
+    if not _database_exists():
+        print("Database not initialized, run 'Database Startup' to continue")
+        MENU_ACTIONS['main']()
+
+    database = Database(False)
+    url = config_parser.insert_URL
+    unsent_tweets = get_all_unsent_to_remote_tweets(database)
+    for tweet in unsent_tweets:
+        send_tweet_to_remote(database, tweet, url)
+
+
 MENU_ACTIONS = {
     'main': menu,
     '1': _database_startup,
     '2': _tweet_capture,
     '3': _date_tweet_capture,
+    '4': _send_all_tweet_to_remote,
     '0': exit,
 }
